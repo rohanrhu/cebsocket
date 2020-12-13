@@ -103,7 +103,6 @@ extern void cebsocket_listen(cebsocket_t* ws) {
         client->id = ++clients_id_i;
         client->ws = ws;
         client->server_socket = server_socket;
-        client->is_host = 0;
         client->socket = client_socket;
         client->address = cli_addr.sin_addr.s_addr;
 
@@ -395,6 +394,7 @@ cebsocket_clients_t* cebsocket_client_init() {
     client->socket = 0;
     client->ws_key = NULL;
     client->address = 0;
+    client->data = NULL;
     client->next = NULL;
     client->prev = NULL;
 }

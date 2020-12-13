@@ -107,7 +107,7 @@ typedef struct cebsocket_clients {
     int server_socket;
     int address;
     char* ws_key;
-    int is_host;
+    void* data;
     cebsocket_clients_t* prev;
     cebsocket_clients_t* next;
 } cebsoket_clients_t;
