@@ -279,7 +279,7 @@ static void receive_http_packet(cebsocket_clients_t* client) {
             unsigned char hash[SHA_DIGEST_LENGTH+1];
             char* accept;
 
-            sprintf(concated, "%s%s", client->ws_key, cebsocket_GUID);
+            sprintf(concated, "%s%s", client->ws_key, CEBSOCKET_GUID);
 
             hash[SHA_DIGEST_LENGTH] = '\0';
 

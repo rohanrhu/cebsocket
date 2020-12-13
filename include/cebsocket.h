@@ -35,7 +35,7 @@ struct cebsocket_packet_frame_len64 {
     uint64_t len64;
 };
 
-#define cebsocket_GUID "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+#define CEBSOCKET_GUID "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
 
 #define HTTP_HEADER_BUFF_SIZE 700
 #define HTTP_PROP_BUFF_SIZE 40
