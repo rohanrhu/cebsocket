@@ -59,7 +59,7 @@ gcc -o hello hello.c websocket.o
 
 ## Events
 ### Thread Safety
-Event handler functions get called from client thread so you can make sure that they are **thread-safe**.
+Event handler functions get called from client thread so you must be sure for they are **thread-safe**.
 
 ### `void on_connected(cebsocket_clients_t* client)`
 Called when a `client` connected.
