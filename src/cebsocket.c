@@ -397,6 +397,8 @@ cebsocket_clients_t* cebsocket_client_init() {
     client->data = NULL;
     client->next = NULL;
     client->prev = NULL;
+
+    return client;
 }
 
 void cebsocket_client_free(cebsocket_clients_t* client) {
