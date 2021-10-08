@@ -34,6 +34,8 @@ extern cebsocket_t* cebsocket_init(int port) {
     ws->on_data = NULL;
     ws->on_connected = NULL;
     ws->on_disconnected = NULL;
+    ws->clients = NULL;
+    ws->current_client = NULL;
 
     return ws;
 }
@@ -88,7 +90,7 @@ extern void cebsocket_listen(cebsocket_t* ws) {
     char str_addr[INET6_ADDRSTRLEN+1];
 
     cebsocket_clients_t* client = NULL;
-    cebsocket_clients_t* current_client = NULL;
+    ws->current_client = NULL;
 
     for (;;) {
         client_socket = accept(server_socket, (struct sockaddr *) &cli_addr, &client_addr_len);
@@ -110,14 +112,14 @@ extern void cebsocket_listen(cebsocket_t* ws) {
 
         client->ws->on_connected(client);
 
-        if (!clients) {
-            clients = client;
+        if (!ws->clients) {
+            ws->clients = client;
         } else {
-            client->prev = current_client;
-            current_client->next = client;
+            client->prev = ws->current_client;
+            ws->current_client->next = client;
         }
 
-        current_client = client;
+        ws->current_client = client;
 
         pthread_create(
             &client_thread,
@@ -328,6 +330,11 @@ static void receive_ws_packet(cebsocket_clients_t* client) {
 
     opcode = ((uint8_t)header0_16) & 0b00001111;
 
+    if (opcode == 8) {
+        client_disconnected(client);
+        return;
+    }
+
     is_masked = (*(((uint8_t*)(&header0_16))+1)) & -128;
     plen = (*(((uint8_t*)(&header0_16))+1)) & 127;
     
@@ -384,9 +391,22 @@ static void client_disconnected(cebsocket_clients_t* client) {
     char str_addr[INET6_ADDRSTRLEN+1];
     inet_ntop(AF_INET, (void*)&client->address, str_addr, INET_ADDRSTRLEN);
     
-    cebsocket_util_verbose("Client disconnected: #%d (%s)\n", client->id, str_addr);
+    if (client->prev) {
+        client->prev->next = client->next;
+    } else {
+        client->ws->clients = client->next;
+    }
+
+    if (client->next) {
+        client->next->prev = client->prev;
+    } else {
+        client->ws->current_client = client->prev;
+    }
+    
     client->ws->on_disconnected(client);
     cebsocket_client_free(client);
+
+    cebsocket_util_verbose("Client disconnected: #%d (%s)\n", client->id, str_addr);
 }
 
 cebsocket_clients_t* cebsocket_client_init() {

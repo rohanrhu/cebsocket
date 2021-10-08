@@ -62,6 +62,7 @@ struct cebsocket {
     char* host_address;
     char* bind_address;
     cebsocket_clients_t* clients;
+    cebsocket_clients_t* current_client;
     void (*on_data)(cebsocket_clients_t*, char*);
     void (*on_connected)(cebsocket_clients_t*);
     void (*on_disconnected)(cebsocket_clients_t*);

@@ -17,7 +17,20 @@
 void on_data(cebsocket_clients_t* client, char* data) {
     printf("WebSocket Message: %s\n", data);
     
-    cebsocket_send(client, "Hello from WebSocket server!");
+    char answer[500];
+    sprintf(answer, "Answer to client: %s", data);
+
+    cebsocket_send(client, answer);
+
+    sprintf(answer, "Answer to broadcast: %s", data);
+
+    cebsocket_clients_t* _client = client->ws->clients;
+    while (_client != NULL) {
+        if (_client->id != client->id)
+            cebsocket_send(_client, answer);
+        
+        _client = _client->next;
+    }
 }
 
 void on_connected(cebsocket_clients_t* client) {
