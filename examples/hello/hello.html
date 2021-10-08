@@ -1,0 +1,43 @@
+<html>
+<head>
+    <title>Hello</title>
+</head>
+<body>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function (event) {
+            var ws = new WebSocket('ws:/127.0.0.1:8080');
+    
+            var messageInput = document.getElementById('messageInput');
+            var messages = document.getElementById('messages');
+    
+            ws.addEventListener('open', function (event) {
+                console.log("Connected to WebSocket server.");
+            });
+            
+            ws.addEventListener('closed', function (event) {
+                console.log("WebSocket connection closed.");
+            });
+            
+            ws.addEventListener('error', function (event) {
+                console.log("WebSocket error:", event);
+            });
+            
+            ws.addEventListener('message', function (event) {
+                console.log("WebSocket message:", event.data);
+                messages.value = messages.value + event.data + '\n';
+            });
+    
+            messageInput.addEventListener('keydown', function (event) {
+                if (event.keyCode == 13) {
+                    ws.send(messageInput.value);
+                    messageInput.value = '';
+                }
+            });
+        });
+    </script>
+
+    <textarea id="messages" style="width: 500px; height: 500px"></textarea>
+    <br>
+    <input id="messageInput" style="width: 500px;" />
+</body>
+</html>
