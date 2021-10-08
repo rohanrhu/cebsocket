@@ -83,6 +83,8 @@ struct cebsocket_clients {
 extern cebsocket_t* cebsocket_init(int port);
 extern void cebsocket_listen(cebsocket_t* ws);
 extern void cebsocket_send(cebsocket_clients_t* client, char* message);
+extern void cebsocket_send_broadcast(cebsocket_clients_t* client, char* message);
+extern void cebsocket_send_all(cebsocket_t* ws, char* message);
 
 cebsocket_clients_t* cebsocket_client_init();
 void cebsocket_free(cebsocket_t* ws);

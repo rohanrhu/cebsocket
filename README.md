@@ -11,7 +11,14 @@ Here is an example for creating simple WebSocket server.
 void on_data(cebsocket_clients_t* client, char* data) {
     printf("WebSocket Message: %s\n", data);
     
-    cebsocket_send(client, "Hello from WebSocket server!");
+    char answer[500];
+    sprintf(answer, "Answer to client: %s", data);
+
+    cebsocket_send(client, answer);
+
+    sprintf(answer, "Answer to broadcast: %s", data);
+
+    cebsocket_send_broadcast(client, answer);
 }
 
 void on_connected(cebsocket_clients_t* client) {
@@ -26,7 +33,7 @@ int main() {
     printf("Starting WebSocket server..\n");
 
     cebsocket_t* ws = cebsocket_init(8080);
-    
+
     ws->on_data = on_data;
     ws->on_connected = on_connected;
     ws->on_disconnected = on_disconnected;
@@ -80,6 +87,24 @@ Starts listening new connections.
 ### `extern void cebsocket_send(cebsocket_clients_t* client, char* message)`
 Sends `message` to `client`.
 
+### `extern void cebsocket_send_broadcast(cebsocket_clients_t* client, char* message)`
+Sends `message` to boradcast of `client`.
+
+### `extern void cebsocket_send_all(cebsocket_t* ws, char* message)`
+Sends `message` to all clients.
+
+## Iterating Clients
+Since `ws->clients` is a linked-list, you can iterate it like the following example.
+
+```c
+cebsocket_clients_t* _client = ws->clients;
+
+while (_client) {
+    cebsocket_send(_client, message);
+    _client = _client->next;
+}
+```
+
 ## Types
 ### `cebsocket_t`
 The WebSocket server instance.
@@ -90,6 +115,7 @@ typedef struct cebsocket {
     char* host_address;
     char* bind_address;
     cebsocket_clients_t* clients;
+    cebsocket_clients_t* current_client;
     void (*on_data)(cebsocket_clients_t*, char*);
     void (*on_connected)(cebsocket_clients_t*);
     void (*on_disconnected)(cebsocket_clients_t*);

@@ -24,13 +24,7 @@ void on_data(cebsocket_clients_t* client, char* data) {
 
     sprintf(answer, "Answer to broadcast: %s", data);
 
-    cebsocket_clients_t* _client = client->ws->clients;
-    while (_client != NULL) {
-        if (_client->id != client->id)
-            cebsocket_send(_client, answer);
-        
-        _client = _client->next;
-    }
+    cebsocket_send_broadcast(client, answer);
 }
 
 void on_connected(cebsocket_clients_t* client) {

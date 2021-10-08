@@ -162,6 +162,27 @@ extern void cebsocket_send(cebsocket_clients_t* client, char* message) {
     send(client->socket, message, strlen(message), 0);
 }
 
+extern void cebsocket_send_broadcast(cebsocket_clients_t* client, char* message) {
+    cebsocket_clients_t* _client = client->ws->clients;
+    
+    while (_client) {
+        if (_client->id != client->id) {
+            cebsocket_send(_client, message);
+        }
+        
+        _client = _client->next;
+    }
+}
+
+extern void cebsocket_send_all(cebsocket_t* ws, char* message) {
+    cebsocket_clients_t* _client = ws->clients;
+    
+    while (_client) {
+        cebsocket_send(_client, message);
+        _client = _client->next;
+    }
+}
+
 static void client_handler(cebsocket_clients_t* client) {
     sigaction(SIGPIPE, &(struct sigaction){broken_pipe_handler}, NULL);
     receive_http_packet(client);
