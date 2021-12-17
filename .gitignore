@@ -3,4 +3,5 @@
 .swo
 .swp
 *.o
-examples/hello
+examples/hello/hello
+examples/chat/chat
