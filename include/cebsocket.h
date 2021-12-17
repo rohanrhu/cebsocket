@@ -11,7 +11,7 @@
 #ifndef __CEBSOCKET_H__
 #define __CEBSOCKET_H__
 
-#include <bits/stdint-uintn.h>
+#include <stdint.h>
 
 #define cebsocket_packet_frame_header \
     uint8_t fin_rsv_opcode; \
